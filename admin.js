@@ -107,14 +107,16 @@ async function loadOrders(){try{const snap=await getDocs(query(collection(db,"or
 function injectSocialSettings(){
  if(document.querySelector("#store-settings"))return;
  const panel=document.createElement("section");panel.className="panel store-settings";panel.id="store-settings";
- panel.innerHTML=`<h3>Coordonnées et réseaux sociaux</h3><p class="muted">Facultatif : seuls les liens renseignés seront visibles dans la boutique.</p>
- <form id="social-form"><label>Facebook<input id="social-facebook" type="url" placeholder="https://facebook.com/..."></label>
+ panel.innerHTML=`<h3>Identité de la boutique</h3><p class="muted">Modifiez le nom affiché sur votre boutique sans toucher au code.</p>
+ <form id="social-form"><label>Nom de la boutique<input id="store-name" type="text" maxlength="60" required placeholder="Yiriwa Market"></label>
+ <h3>Coordonnées et réseaux sociaux</h3><p class="muted">Facultatif : seuls les liens renseignés seront visibles dans la boutique.</p>
+ <label>Facebook<input id="social-facebook" type="url" placeholder="https://facebook.com/..."></label>
  <label>TikTok<input id="social-tiktok" type="url" placeholder="https://tiktok.com/@..."></label>
  <label>Instagram<input id="social-instagram" type="url" placeholder="https://instagram.com/..."></label>
  <label>Adresse e-mail professionnelle<input id="social-email" type="email" placeholder="contact@..."></label>
  <button class="btn btn-primary" type="submit">Enregistrer les coordonnées</button><p id="social-message" class="message"></p></form>`;
  $("#dashboard").append(panel);
- $("#social-form").addEventListener("submit",async e=>{e.preventDefault();const m=$("#social-message");m.textContent="Enregistrement…";try{await setDoc(doc(db,"settings","storefront"),{facebook:$("#social-facebook").value.trim(),tiktok:$("#social-tiktok").value.trim(),instagram:$("#social-instagram").value.trim(),email:$("#social-email").value.trim(),updatedAt:serverTimestamp()},{merge:true});m.textContent="Coordonnées enregistrées ✓";}catch(err){console.error(err);m.textContent="Enregistrement impossible. Vérifiez les règles Firestore.";m.classList.add("error");}});
+ $("#social-form").addEventListener("submit",async e=>{e.preventDefault();const m=$("#social-message");m.textContent="Enregistrement…";try{await setDoc(doc(db,"settings","storefront"),{storeName:$("#store-name").value.trim()||"Yiriwa Market",facebook:$("#social-facebook").value.trim(),tiktok:$("#social-tiktok").value.trim(),instagram:$("#social-instagram").value.trim(),email:$("#social-email").value.trim(),updatedAt:serverTimestamp()},{merge:true});m.textContent="Nom et coordonnées enregistrés ✓";}catch(err){console.error(err);m.textContent="Enregistrement impossible. Vérifiez les règles Firestore.";m.classList.add("error");}});
 }
-async function loadStoreSettings(){injectSocialSettings();try{const snap=await getDoc(doc(db,"settings","storefront"));if(snap.exists()){const d=snap.data();$("#social-facebook").value=d.facebook||"";$("#social-tiktok").value=d.tiktok||"";$("#social-instagram").value=d.instagram||"";$("#social-email").value=d.email||"";}}catch(e){console.warn("Lecture des coordonnées impossible",e);}}
+async function loadStoreSettings(){injectSocialSettings();try{const snap=await getDoc(doc(db,"settings","storefront"));if(snap.exists()){const d=snap.data();$("#store-name").value=d.storeName||"Yiriwa Market";$("#social-facebook").value=d.facebook||"";$("#social-tiktok").value=d.tiktok||"";$("#social-instagram").value=d.instagram||"";$("#social-email").value=d.email||"";}}catch(e){console.warn("Lecture des coordonnées impossible",e);}}
 resetForm();
