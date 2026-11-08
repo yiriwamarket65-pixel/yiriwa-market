@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b5b3b">
+  <title>Yiriwa Market — Votre marché en ligne</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Yiriwa Market">
+    <span class="brand-mark">YM</span><span class="brand-name">Yiriwa <b>Market</b></span>
+  </a>
+  <nav><a href="#catalogue">Boutique</a><a href="#contact">Contact</a><a class="admin-link" href="admin.html">Espace admin</a></nav>
+</header>
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">LE MARCHÉ, PLUS PROCHE DE VOUS</span>
+    <h1>Vos envies.<br><em>Nos bonnes affaires.</em></h1>
+    <p>Découvrez les produits disponibles chez Yiriwa Market et commandez facilement par WhatsApp.</p>
+    <a class="btn btn-light" href="#catalogue">Découvrir la boutique <span>→</span></a>
+  </div>
+  <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="hero-monogram">YM</div><div class="hero-leaf">✦</div></div>
+  <div class="hero-bottom"><span>QUALITÉ • CHOIX • CONFIANCE</span><span>ACHETEZ EN TOUTE SIMPLICITÉ</span></div>
+</section>
+<main>
+  <section class="intro-row" id="catalogue">
+    <div><span class="eyebrow green">LA SÉLECTION YIRIWA</span><h2>Explorez nos produits</h2><p class="muted">Des offres actualisées selon les disponibilités.</p></div>
+    <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Rechercher un produit…"></div>
+  </section>
+  <div class="toolbar"><div id="categories" class="categories"><button class="chip active" data-category="Tous">Tout</button></div><span id="product-count" class="muted small"></span></div>
+  <section id="product-grid" class="product-grid"><div class="loading">Chargement des produits…</div></section>
+  <section class="trust-strip"><div><b>✓</b><span>Disponibilité affichée</span></div><div><b>↗</b><span>Commande simple</span></div><div><b>♡</b><span>Service de proximité</span></div></section>
+</main>
+<footer id="contact"><div class="footer-brand"><span class="brand-mark">YM</span><div><strong>Yiriwa Market</strong><small>Votre marché en ligne</small></div></div><div><strong>Une question ?</strong><a href="https://wa.me/22365620644" target="_blank" rel="noopener">WhatsApp : +223 65 62 06 44</a></div><div class="footer-end">© <span id="year"></span> Yiriwa Market</div></footer>
+<script type="module" src="store.js"></script>
+</body>
+</html>
