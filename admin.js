@@ -37,36 +37,37 @@ async function uploadImage(file){
   if(!response.ok) throw new Error(result.message||"Échec de l'envoi de la photo.");
   return result.url;
 }
-function rowImages(row){try{return JSON.parse(row.dataset.images||"[]");}catch{return [];}}
-function paintPreviews(row){
-  const box=row.querySelector(".image-previews");
-  const urls=rowImages(row);
-  box.innerHTML=urls.map((url,i)=>`<div class="admin-photo-thumb"><img src="${esc(url)}" alt="Photo ${i+1}"><button type="button" data-remove-image="${i}" aria-label="Retirer la photo">×</button></div>`).join("");
-  box.querySelectorAll("[data-remove-image]").forEach(b=>b.addEventListener("click",()=>{const a=rowImages(row);a.splice(Number(b.dataset.removeImage),1);row.dataset.images=JSON.stringify(a);paintPreviews(row);}));
-  row.querySelector(".image-count").textContent=`${urls.length}/3 photo(s)`;
+let sharedImages=[], pendingFiles=[];
+function revokePending(){pendingFiles.forEach(x=>URL.revokeObjectURL(x.preview));pendingFiles=[];}
+function paintProductPhotos(){
+ const box=$("#product-photo-previews");
+ box.innerHTML=[...sharedImages.map((url,i)=>({url,kind:"saved",index:i})),...pendingFiles.map((x,i)=>({url:x.preview,kind:"pending",index:i}))].map(x=>`<div class="product-photo-card"><img src="${esc(x.url)}" alt="Aperçu de la photo"><button type="button" data-photo-kind="${x.kind}" data-photo-index="${x.index}" aria-label="Supprimer cette photo">×</button><small>${x.kind==="pending"?"Pas encore téléversée":"Déjà enregistrée"}</small></div>`).join("");
+ box.querySelectorAll("[data-photo-kind]").forEach(b=>b.addEventListener("click",()=>{const i=Number(b.dataset.photoIndex);if(b.dataset.photoKind==="saved")sharedImages.splice(i,1);else{URL.revokeObjectURL(pendingFiles[i].preview);pendingFiles.splice(i,1);}paintProductPhotos();}));
+ $("#photo-count").textContent=`${sharedImages.length+pendingFiles.length}/3 photos sélectionnées`;
 }
-function variantRow(v={name:"Standard",price:"",oldPrice:"",stock:1,images:[],imageUrl:"",promoEndsAt:"",available:true}){
-  const initial=Array.isArray(v.images)&&v.images.length?v.images:(v.imageUrl?[v.imageUrl]:[]);
-  const el=document.createElement("div");el.className="variant-row";el.dataset.images=JSON.stringify(initial.slice(0,3));
-  el.innerHTML=`<div class="variant-row-head"><b>Version</b><button type="button" class="text-btn remove-variant">Retirer</button></div>
-  <label>Nom de la version<input class="v-name" maxlength="60" required value="${esc(v.name)}" placeholder="Ex. Noir / 128 Go"></label>
-  <div class="form-grid"><label>Prix (FCFA)<input class="v-price" type="number" min="0" step="1" required value="${esc(v.price)}"></label><label>Ancien prix<input class="v-old" type="number" min="0" step="1" value="${esc(v.oldPrice??"")}"></label></div>
-  <div class="form-grid"><label>Stock<input class="v-stock" type="number" min="0" step="1" required value="${esc(v.stock)}"></label><label>Fin de promotion<input class="v-end" type="datetime-local" value="${esc(v.promoEndsAt||"")}"></label></div>
-  <label class="upload-label">Photos du produit (3 maximum)<input class="v-files" type="file" accept="image/*" multiple><small>Sélectionnez jusqu'à 3 images depuis votre téléphone. 8 Mo maximum par image.</small></label>
-  <div class="image-previews"></div><small class="image-count"></small><p class="upload-status muted"></p>
-  <label class="check-row"><input class="v-available" type="checkbox" ${v.available===false?"":"checked"}> Disponible</label>`;
-  el.querySelector(".remove-variant").addEventListener("click",()=>{if(document.querySelectorAll(".variant-row").length>1)el.remove();else alert("Un produit doit garder au moins une version.");});
-  el.querySelector(".v-files").addEventListener("change",e=>{
-    const files=[...e.target.files];const current=rowImages(el);
-    if(current.length+files.length>3){alert("Maximum 3 photos par version. Retirez une photo avant d'en ajouter.");e.target.value="";return;}
-    el._newFiles=[...(el._newFiles||[]),...files];el.querySelector(".upload-status").textContent=`${el._newFiles.length} nouvelle(s) photo(s) prête(s) à envoyer.`;
-    for(const f of files){const url=URL.createObjectURL(f);const im=document.createElement("img");im.src=url;im.alt="Aperçu";im.className="pending-preview";el.querySelector(".image-previews").append(im);}
-    el.querySelector(".image-count").textContent=`${current.length+el._newFiles.length}/3 photo(s)`;
-  });
-  paintPreviews(el);return el;
+$("#product-photos").addEventListener("change",e=>{
+ const files=[...e.target.files],room=3-sharedImages.length-pendingFiles.length;
+ if(files.length>room){alert(`Vous pouvez ajouter encore ${room} photo(s) maximum. Retirez d'abord une photo si nécessaire.`);e.target.value="";return;}
+ for(const file of files){if(!file.type.startsWith("image/")){alert("Choisissez uniquement des images.");continue;}if(file.size>8*1024*1024){alert("Chaque image doit faire 8 Mo maximum.");continue;}pendingFiles.push({file,preview:URL.createObjectURL(file)});}
+ e.target.value="";paintProductPhotos();
+});
+$("#clear-photos").addEventListener("click",()=>{sharedImages=[];revokePending();paintProductPhotos();});
+function variantRow(v={name:"",price:"",oldPrice:"",stock:1,promoEndsAt:"",available:true}){
+ const el=document.createElement("div");el.className="variant-row";
+ el.innerHTML=`<div class="variant-row-head"><b>Variante</b><button type="button" class="text-btn remove-variant">Supprimer cette variante</button></div>
+ <label>Nom de la variante<input class="v-name" maxlength="60" required value="${esc(v.name)}" placeholder="Ex. Noir / 128 Go"></label>
+ <div class="form-grid"><label>Prix (FCFA)<input class="v-price" type="number" min="0" step="1" required value="${esc(v.price)}"></label><label>Ancien prix (facultatif)<input class="v-old" type="number" min="0" step="1" value="${esc(v.oldPrice??"")}"></label></div>
+ <div class="form-grid"><label>Stock<input class="v-stock" type="number" min="0" step="1" required value="${esc(v.stock)}"></label><label>Fin de promotion<input class="v-end" type="datetime-local" value="${esc(v.promoEndsAt||"")}"></label></div>
+ <label class="check-row"><input class="v-available" type="checkbox" ${v.available===false?"":"checked"}> Disponible</label>`;
+ el.querySelector(".remove-variant").addEventListener("click",()=>{el.remove();if(!document.querySelectorAll(".variant-row").length){$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;$("#toggle-variants").setAttribute("aria-expanded","false");$("#toggle-variants").textContent="+ Ajouter des variantes";}});
+ return el;
 }
 function addVariant(v){$("#variant-editor").append(variantRow(v));}
-$("#add-variant").addEventListener("click",()=>addVariant({name:"",price:"",oldPrice:"",stock:1,images:[],promoEndsAt:"",available:true}));
+$("#toggle-variants").addEventListener("click",()=>{
+ const box=$("#variant-editor");
+ if(box.children.length){box.innerHTML="";box.hidden=true;$("#simple-fields").hidden=false;$("#toggle-variants").setAttribute("aria-expanded","false");$("#toggle-variants").textContent="+ Ajouter des variantes";return;}
+ box.hidden=false;$("#simple-fields").hidden=true;$("#toggle-variants").setAttribute("aria-expanded","true");$("#toggle-variants").textContent="− Retirer les variantes";addVariant({name:"",price:"",oldPrice:"",stock:1,available:true});
+});
 $("#login-form").addEventListener("submit",async e=>{e.preventDefault();loginError.textContent="";try{await signInWithEmailAndPassword(auth,$("#email").value.trim(),$("#password").value);}catch(err){loginError.textContent="Connexion impossible. Vérifiez l'adresse e-mail et le mot de passe.";console.error(err);}});
 $("#logout").addEventListener("click",()=>signOut(auth));
 onAuthStateChanged(auth,user=>{if(user&&user.uid!==ADMIN_UID){loginError.textContent="Ce compte ne possède pas les droits administrateur.";signOut(auth);return;}loginPanel.hidden=!!user;dashboard.hidden=!user;if(user){loadProducts();loadOrders();loadStoreSettings();}});
@@ -78,26 +79,38 @@ async function loadProducts(){
  }catch(e){console.error(e);$("#admin-products").innerHTML='<p class="error">Impossible de charger le catalogue. Vérifiez les règles Firestore.</p>';}
 }
 function editProduct(id){
- const p=currentProducts.find(x=>x.id===id);if(!p)return;$("#product-id").value=p.id;$("#p-name").value=p.name||"";$("#p-category").value=p.category||"";$("#p-description").value=p.description||"";$("#variant-editor").innerHTML="";
- const vs=Array.isArray(p.variants)&&p.variants.length?p.variants:[{name:"Standard",price:p.price??0,oldPrice:p.oldPrice??"",stock:p.stock??0,imageUrl:p.imageUrl||"",images:p.images||[],promoEndsAt:p.promoEndsAt||"",available:p.available!==false}];vs.forEach(addVariant);
+ const p=currentProducts.find(x=>x.id===id);if(!p)return;
+ $("#product-id").value=p.id;$("#p-name").value=p.name||"";$("#p-category").value=p.category||"";$("#p-description").value=p.description||"";
+ const vs=Array.isArray(p.variants)&&p.variants.length?p.variants:[{name:"Standard",price:p.price??0,oldPrice:p.oldPrice??"",stock:p.stock??0,images:p.images||[],imageUrl:p.imageUrl||"",promoEndsAt:p.promoEndsAt||"",available:p.available!==false}];
+ const first=vs[0],imgs=Array.isArray(first.images)&&first.images.length?first.images:(first.imageUrl?[first.imageUrl]:[]);
+ sharedImages=imgs.slice(0,3);revokePending();paintProductPhotos();
+ const hasVariants=vs.length>1||(vs.length===1&&vs[0].name&&vs[0].name!=="Standard");
+ $("#variant-editor").innerHTML="";$("#variant-editor").hidden=!hasVariants;$("#simple-fields").hidden=hasVariants;
+ $("#toggle-variants").setAttribute("aria-expanded",String(hasVariants));$("#toggle-variants").textContent=hasVariants?"− Retirer les variantes":"+ Ajouter des variantes";
+ $("#simple-price").value=first.price??0;$("#simple-old-price").value=first.oldPrice??"";$("#simple-stock").value=first.stock??0;$("#simple-end").value=first.promoEndsAt||"";$("#simple-available").checked=first.available!==false;
+ if(hasVariants)vs.forEach(addVariant);
  $("#form-title").textContent="Modifier le produit";$("#cancel-edit").hidden=false;$("#form-message").textContent="";window.scrollTo({top:0,behavior:"smooth"});
 }
-function resetForm(){$("#product-form").reset();$("#product-id").value="";$("#variant-editor").innerHTML="";addVariant();$("#form-title").textContent="Ajouter un produit";$("#cancel-edit").hidden=true;}
+function resetForm(){
+ $("#product-form").reset();$("#product-id").value="";$("#variant-editor").innerHTML="";$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;
+ sharedImages=[];revokePending();paintProductPhotos();$("#toggle-variants").textContent="+ Ajouter des variantes";$("#toggle-variants").setAttribute("aria-expanded","false");
+ $("#form-title").textContent="Ajouter un produit";$("#cancel-edit").hidden=true;
+}
 $("#cancel-edit").addEventListener("click",resetForm);
-async function collectVariants(){
- const rows=[...document.querySelectorAll(".variant-row")],out=[];
- for(let i=0;i<rows.length;i++){
-  const row=rows[i],urls=rowImages(row),files=row._newFiles||[];
-  if(urls.length+files.length>3)throw new Error("Maximum 3 photos par version.");
-  for(let j=0;j<files.length;j++){row.querySelector(".upload-status").textContent=`Envoi de la photo ${j+1}/${files.length}…`;urls.push(await uploadImage(files[j]));}
-  row.querySelector(".upload-status").textContent="Photos envoyées ✓";
-  out.push({name:row.querySelector(".v-name").value.trim(),price:Number(row.querySelector(".v-price").value),oldPrice:row.querySelector(".v-old").value?Number(row.querySelector(".v-old").value):null,stock:Number(row.querySelector(".v-stock").value),promoEndsAt:row.querySelector(".v-end").value||null,images:urls,imageUrl:urls[0]||"",available:row.querySelector(".v-available").checked});
- }
- return out;
+async function saveSharedPhotos(){
+ const urls=[...sharedImages];
+ for(let i=0;i<pendingFiles.length;i++){ $("#photo-upload-status").textContent=`Téléversement de la photo ${i+1}/${pendingFiles.length}…`;urls.push(await uploadImage(pendingFiles[i].file));}
+ $("#photo-upload-status").textContent=urls.length?"Photos prêtes ✓":"Aucune photo ajoutée";return urls;
+}
+function collectVariants(images){
+ const rows=[...document.querySelectorAll(".variant-row")];
+ if(!rows.length)return [{name:"Standard",price:Number($("#simple-price").value),oldPrice:$("#simple-old-price").value?Number($("#simple-old-price").value):null,stock:Number($("#simple-stock").value),promoEndsAt:$("#simple-end").value||null,images,imageUrl:images[0]||"",available:$("#simple-available").checked}];
+ return rows.map(row=>({name:row.querySelector(".v-name").value.trim(),price:Number(row.querySelector(".v-price").value),oldPrice:row.querySelector(".v-old").value?Number(row.querySelector(".v-old").value):null,stock:Number(row.querySelector(".v-stock").value),promoEndsAt:row.querySelector(".v-end").value||null,images,imageUrl:images[0]||"",available:row.querySelector(".v-available").checked}));
 }
 $("#product-form").addEventListener("submit",async e=>{
- e.preventDefault();const id=$("#product-id").value,msg=$("#form-message");msg.classList.remove("error");msg.textContent="Enregistrement…";
- try{const variants=await collectVariants();if(!variants.length)throw new Error("Ajoutez au moins une version.");const data={name:$("#p-name").value.trim(),category:$("#p-category").value.trim(),description:$("#p-description").value.trim(),variants,updatedAt:serverTimestamp()};
+ e.preventDefault();const id=$("#product-id").value,msg=$("#form-message");msg.classList.remove("error");msg.textContent="Préparation du produit…";
+ try{const images=await saveSharedPhotos(),variants=collectVariants(images);if(!variants.length)throw new Error("Ajoutez au moins une variante.");if(variants.some(v=>!v.name||!Number.isFinite(v.price)||v.price<0||!Number.isFinite(v.stock)||v.stock<0))throw new Error("Vérifiez le nom, le prix et le stock.");
+ const data={name:$("#p-name").value.trim(),category:$("#p-category").value.trim(),description:$("#p-description").value.trim(),variants,updatedAt:serverTimestamp()};
  if(id)await updateDoc(doc(db,"products",id),data);else await addDoc(collection(db,"products"),{...data,createdAt:serverTimestamp()});
  msg.textContent="Produit enregistré avec succès.";resetForm();await loadProducts();
  }catch(err){console.error(err);msg.textContent=err.message||"Échec de l'enregistrement. Vérifiez votre connexion et les règles Firestore.";msg.classList.add("error");}
