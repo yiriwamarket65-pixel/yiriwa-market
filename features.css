@@ -375,3 +375,71 @@
 @media(max-width:360px){
   .product-image{height:255px;min-height:255px}
 }
+
+
+/* Boutique publique : touches blanches pour un catalogue plus lumineux */
+body:not(.admin-body) .search-wrap{
+  background:#fff;
+  border:1px solid #e1e9e2;
+  box-shadow:0 5px 18px rgba(20,55,34,.06);
+}
+body:not(.admin-body) .search-wrap input{color:#20372a}
+body:not(.admin-body) .search-wrap input::placeholder{color:#87958b}
+body:not(.admin-body) .chip{
+  background:#fff;
+  border:1px solid #dce7de;
+  color:#365442;
+}
+body:not(.admin-body) .chip.active{
+  background:#147a50;
+  border-color:#147a50;
+  color:#fff;
+}
+body:not(.admin-body) .product-card{
+  background:#fff;
+  border:1px solid #e1e9e2;
+  box-shadow:0 8px 24px rgba(20,55,34,.08);
+}
+body:not(.admin-body) .product-card:hover{
+  border-color:#a9c9b2;
+  box-shadow:0 14px 30px rgba(20,55,34,.13);
+}
+body:not(.admin-body) .product-image{
+  background:linear-gradient(145deg,#fff,#f2f6f2);
+  border-right-color:#e5ece6;
+  border-bottom-color:#e5ece6;
+}
+body:not(.admin-body) .product-info h3{color:#20372a}
+body:not(.admin-body) .product-desc{color:#68796e}
+body:not(.admin-body) .product-category{
+  background:#e8f3eb;
+  color:#17613f;
+}
+body:not(.admin-body) .variant-list{
+  background:#f7faf7;
+  border-color:#e1e9e2;
+}
+body:not(.admin-body) .variant-list>small{color:#63766a}
+body:not(.admin-body) .variant-choice{
+  background:#fff;
+  border-color:#cbd9ce;
+  color:#365442;
+}
+body:not(.admin-body) .variant-choice:has(input:checked){
+  background:#147a50;
+  border-color:#8dc66b;
+  color:#fff;
+}
+body:not(.admin-body) .price-line strong{color:#176b43}
+body:not(.admin-body) .price-line del,
+body:not(.admin-body) .stock-line{color:#77867c}
+body:not(.admin-body) .trust-strip{
+  background:#fff;
+  border:1px solid #e1e9e2;
+  color:#365442;
+  box-shadow:0 8px 22px rgba(20,55,34,.06);
+}
+body:not(.admin-body) .trust-strip b{
+  background:#e8f3eb;
+  color:#17613f;
+}
