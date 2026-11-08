@@ -1,0 +1,19 @@
+YIRIWA MARKET — pack de mise à jour
+
+Contenu :
+- admin.html et admin.js : administration avec sélection de 3 images maximum par variante et paramètres sociaux.
+- store.js : galerie client, menu ⋮ et téléchargement, affichage des contacts facultatifs.
+- features.css : styles supplémentaires, sans remplacer votre styles.css actuel.
+- netlify/functions/imagekit-auth.mjs : signature sécurisée ImageKit.
+- netlify.toml : indique le dossier des fonctions à Netlify.
+
+IMPORTANT AVANT PUBLICATION
+1. Gardez une copie de sauvegarde de vos fichiers actuels.
+2. Remplacez admin.html, admin.js et store.js à la racine du site.
+3. Ajoutez features.css à la racine.
+4. Ajoutez le dossier netlify/functions/imagekit-auth.mjs et netlify.toml à la racine.
+5. Gardez votre firebase.js et styles.css actuels.
+6. La fonction Netlify doit être déployée avec les fonctions activées (un simple dépôt statique/Netlify Drop peut ne pas publier les fonctions). La variable IMAGEKIT_PRIVATE_KEY doit rester dans les variables d'environnement Netlify.
+7. Les règles Firestore doivent autoriser la lecture publique de settings/storefront et l'écriture par l'administrateur connecté. Si ce document n'est pas autorisé, les paramètres sociaux ne pourront pas s'enregistrer/afficher.
+
+ImageKit public key et Firebase config sont des valeurs publiques. Ne partagez jamais la clé privée ImageKit.

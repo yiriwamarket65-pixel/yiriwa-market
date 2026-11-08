@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0b5b3b"><title>Administration — Yiriwa Market</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="features.css"></head>
+<body class="admin-body">
+<header class="topbar"><a class="brand" href="./"><span class="brand-mark">YM</span><span class="brand-name">Yiriwa <b>Market</b></span></a><a class="back-link" href="./">← Voir la boutique</a></header>
+<main class="admin-main">
+  <div class="admin-heading"><div><span class="eyebrow green">ESPACE PRIVÉ</span><h1>Administration</h1><p class="muted">Gérez le catalogue et les disponibilités de votre boutique.</p></div><span class="secure-badge">🔒 Accès protégé</span></div>
+  <section id="login-panel" class="panel login-panel"><h2>Connexion administrateur</h2><p class="muted">Connectez-vous avec l'adresse e-mail et le mot de passe de l'utilisateur créé dans Firebase.</p><form id="login-form"><label>Adresse e-mail<input id="email" type="email" autocomplete="username" required></label><label>Mot de passe<input id="password" type="password" autocomplete="current-password" required></label><button class="btn btn-primary" type="submit">Se connecter</button><p id="login-error" class="error" role="alert"></p></form></section>
+  <section id="dashboard" hidden>
+    <div class="dash-bar"><div><h2>Vos produits</h2><p class="muted">Ajoutez, modifiez ou retirez des articles.</p></div><button id="logout" class="btn btn-outline">Déconnexion</button></div>
+    <div class="admin-layout">
+      <form id="product-form" class="panel product-form">
+        <h3 id="form-title">Ajouter un produit</h3><input type="hidden" id="product-id">
+        <label>Nom du produit<input id="p-name" required maxlength="90" placeholder="Ex. Écouteurs Bluetooth"></label>
+        <label>Catégorie<input id="p-category" required maxlength="40" placeholder="Ex. Électronique"></label>
+        <label>Description<textarea id="p-description" rows="3" maxlength="500" placeholder="Quelques détails sur le produit"></textarea></label>
+        <div class="variant-heading"><div><b>Versions / variantes</b><small>Chaque version peut avoir son propre prix, stock et jusqu'à 3 photos.</small></div><button id="add-variant" class="btn btn-outline" type="button">+ Ajouter une version</button></div>
+        <div id="variant-editor" class="variant-editor"></div>
+        <p class="hint">Les photos sont hébergées sur ImageKit. Aucune activation de Firebase Storage n'est nécessaire.</p>
+        <div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer le produit</button><button id="cancel-edit" class="btn btn-outline" type="button" hidden>Annuler</button></div>
+        <p id="form-message" class="message" role="status"></p>
+      </form>
+      <section class="panel inventory"><div class="inventory-head"><h3>Catalogue actuel</h3><span id="admin-count" class="count-badge">0</span></div><div id="admin-products"><p class="muted">Chargement…</p></div></section>
+    </div>
+    <section class="panel orders-panel"><div class="inventory-head"><div><h3>Commandes reçues</h3><p class="muted">Les commandes initiées depuis WhatsApp apparaîtront ici.</p></div><span id="orders-count" class="count-badge">0</span></div><div id="admin-orders"><p class="muted">Chargement…</p></div></section>
+  </section>
+</main>
+<script type="module" src="admin.js"></script>
+</body></html>
