@@ -478,3 +478,43 @@ body:not(.admin-body) .trust-strip b{
 body.cart-open{overflow:hidden}
 .add-cart-btn{width:100%;min-height:42px;border-radius:10px;font-size:11px}
 @media(max-width:650px){nav{gap:10px}nav>a:first-child,nav>a:nth-child(2){display:none}.cart-toggle{padding:9px 11px;font-size:12px}.cart-panel{padding:19px}}
+
+
+/* Barre panier persistante en bas après le premier ajout */
+.cart-dock{
+  position:fixed;
+  z-index:70;
+  left:50%;
+  bottom:max(14px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  width:min(680px,calc(100% - 28px));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:12px 14px;
+  border:1px solid #d9e8dc;
+  border-radius:17px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 12px 38px rgba(12,45,26,.22);
+  backdrop-filter:blur(12px);
+  animation:cartDockIn .24s ease-out;
+}
+.cart-dock[hidden]{display:none}
+.cart-dock-copy{display:flex;align-items:center;gap:11px;min-width:0}
+.cart-dock-icon{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:#e9f5ec;font-size:21px}
+.cart-dock-copy>div{display:grid;gap:4px;min-width:0}
+.cart-dock-copy b{color:#20372a;font-size:13px}
+.cart-dock-copy small{color:#718078;font-size:11px}
+.cart-dock-copy small strong{color:#176b43;font-size:13px}
+.cart-dock>button{display:flex;align-items:center;gap:10px;flex-shrink:0;min-height:43px;padding:0 16px;border:0;border-radius:11px;background:#147a50;color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+.cart-dock>button:hover{background:#0b5b3b}
+@keyframes cartDockIn{from{opacity:0;transform:translate(-50%,18px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(max-width:420px){
+ .cart-dock{width:calc(100% - 20px);bottom:max(10px,env(safe-area-inset-bottom));padding:10px;border-radius:14px;gap:8px}
+ .cart-dock-icon{width:36px;height:36px;flex-basis:36px}
+ .cart-dock-copy b{font-size:11px}
+ .cart-dock-copy small{font-size:10px}
+ .cart-dock-copy small strong{font-size:12px}
+ .cart-dock>button{min-height:40px;padding:0 11px;font-size:11px}
+}
