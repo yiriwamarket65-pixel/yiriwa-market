@@ -161,3 +161,167 @@
   .variant-choice{min-height:34px;padding:6px 9px;font-size:10px}
   .order-btn{font-size:10px;padding:9px 5px}
 }
+
+
+/* Refonte premium des fiches catalogue : format horizontal maîtrisé */
+.product-grid{
+  max-width:1320px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  align-items:stretch;
+}
+.product-card{
+  display:grid;
+  grid-template-columns:minmax(150px,40%) minmax(0,1fr);
+  min-width:0;
+  min-height:224px;
+  background:linear-gradient(145deg,#1b3b2c,#173326);
+  border:1px solid #355744;
+  border-radius:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.12);
+  transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.product-card:hover{
+  transform:translateY(-3px);
+  border-color:#6c9876;
+  box-shadow:0 14px 30px rgba(0,0,0,.2);
+}
+.product-image{
+  width:100%;
+  height:100%;
+  min-height:224px;
+  padding:14px;
+  border-radius:17px 0 0 17px;
+  background:radial-gradient(ellipse at center,#315b40 0%,#1b3b2c 72%);
+  border-right:1px solid #355744;
+}
+.product-image .product-photo{
+  object-fit:contain;
+  padding:3px;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.16));
+}
+.product-info{
+  min-width:0;
+  padding:17px 18px;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:center;
+  gap:7px;
+}
+.product-category{
+  display:inline-flex;
+  align-self:flex-start;
+  padding:4px 8px;
+  border-radius:20px;
+  background:#244b35;
+  color:#c7ef83;
+  font-size:9px;
+  letter-spacing:1px;
+}
+.product-info h3{
+  margin:0;
+  color:#f3f8f3;
+  font:750 17px/1.25 Manrope,sans-serif;
+  letter-spacing:-.25px;
+}
+.product-desc{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  min-height:0;
+  margin:0;
+  color:#b4c8b9;
+  font-size:11px;
+  line-height:1.5;
+}
+.variant-list{
+  margin:2px 0;
+  padding:8px;
+  gap:6px;
+  background:#142e22;
+  border:1px solid #2d5039;
+  border-radius:10px;
+}
+.variant-list>small{
+  color:#b9d5bf;
+  font-size:9px;
+  letter-spacing:.3px;
+}
+.variant-choice{
+  min-height:32px;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:10px;
+}
+.price-line{
+  display:flex;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:2px 0 0;
+}
+.price-line strong{
+  color:#d2f39e;
+  font:800 19px/1.2 Manrope,sans-serif;
+}
+.price-line del{color:#9caf9f;font-size:11px}
+.stock-line{
+  margin:0 0 2px;
+  color:#a9c5af;
+  font-size:10px;
+}
+.order-btn{
+  width:100%;
+  min-height:40px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.1px;
+}
+.order-btn.btn-primary{
+  background:linear-gradient(100deg,#168052,#0b5b3b);
+  border:1px solid #3c9a67;
+  box-shadow:0 5px 13px #061b103d;
+}
+.order-btn.btn-primary:hover{background:#1b9560}
+@media(max-width:900px){
+  .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+  .product-card{grid-template-columns:minmax(120px,38%) minmax(0,1fr)}
+  .product-info{padding:13px}
+  .product-image{padding:9px}
+  .product-info h3{font-size:15px}
+  .price-line strong{font-size:17px}
+}
+@media(max-width:650px){
+  .product-grid{
+    grid-template-columns:minmax(0,1fr);
+    gap:12px;
+    padding:0 13px;
+  }
+  .product-card{
+    grid-template-columns:minmax(118px,36%) minmax(0,1fr);
+    min-height:190px;
+    border-radius:15px;
+  }
+  .product-image{
+    min-height:190px;
+    border-radius:14px 0 0 14px;
+    padding:8px;
+  }
+  .product-info{padding:11px 12px;gap:6px}
+  .product-info h3{font-size:14px;line-height:1.25}
+  .product-category{font-size:8px;padding:3px 7px}
+  .product-desc{font-size:10px;line-height:1.4}
+  .variant-list{padding:6px;gap:5px}
+  .variant-choice{min-height:30px;padding:5px 8px;font-size:9px}
+  .price-line strong{font-size:16px}
+  .stock-line{font-size:9px}
+  .order-btn{min-height:36px;font-size:10px;padding:8px 5px}
+  .gallery-arrow{width:34px;height:34px;font-size:21px}
+}
+@media(max-width:360px){
+  .product-card{grid-template-columns:110px minmax(0,1fr)}
+  .product-info{padding:9px}
+  .product-info h3{font-size:13px}
+}
