@@ -12,9 +12,9 @@
   <a class="brand" href="./" aria-label="Yiriwa Market">
     <span class="brand-mark">YM</span><span class="brand-name">Yiriwa <b>Market</b></span>
   </a>
-  <nav><a href="#catalogue">Boutique</a><a href="#contact">Contact</a><a class="admin-link" href="admin.html">Espace admin</a></nav>
+  <nav><a href="#catalogue">Boutique</a><a href="#contact">Contact</a><button id="cart-toggle" class="cart-toggle" type="button" aria-label="Ouvrir le panier">🛒 <span>Panier</span><b id="cart-badge" hidden>0</b></button><a class="admin-link" href="admin.html">Espace admin</a></nav>
 </header>
-<section class="hero">
+<div id="cart-overlay" class="cart-overlay" hidden></div><aside id="cart-panel" class="cart-panel" aria-label="Votre panier" hidden><div class="cart-head"><div><span class="eyebrow green">VOTRE SÉLECTION</span><h2>Mon panier</h2></div><button id="cart-close" type="button" aria-label="Fermer le panier">×</button></div><div id="cart-items" class="cart-items"></div><div class="cart-foot"><div class="cart-total"><span>Total estimé</span><strong id="cart-total">0 FCFA</strong></div><p>La commande sera confirmée avec la boutique sur WhatsApp.</p><button id="cart-checkout" class="btn btn-primary" type="button">Commander sur WhatsApp →</button></div></aside><section class="hero">
   <div class="hero-copy">
     <span class="eyebrow">LE MARCHÉ, PLUS PROCHE DE VOUS</span>
     <h1>Vos envies.<br><em>Nos bonnes affaires.</em></h1>
