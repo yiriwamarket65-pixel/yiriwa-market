@@ -8,17 +8,34 @@
   <section id="login-panel" class="panel login-panel"><h2>Connexion administrateur</h2><p class="muted">Connectez-vous avec l'adresse e-mail et le mot de passe de l'utilisateur créé dans Firebase.</p><form id="login-form"><label>Adresse e-mail<input id="email" type="email" autocomplete="username" required></label><label>Mot de passe<input id="password" type="password" autocomplete="current-password" required></label><button class="btn btn-primary" type="submit">Se connecter</button><p id="login-error" class="error" role="alert"></p></form></section>
   <section id="dashboard" hidden>
     <div class="dash-bar"><div><h2>Vos produits</h2><p class="muted">Ajoutez, modifiez ou retirez des articles.</p></div><button id="logout" class="btn btn-outline">Déconnexion</button></div>
-    <div class="admin-layout">
+    <div class="admin-layout admin-layout-stacked">
       <form id="product-form" class="panel product-form">
-        <h3 id="form-title">Ajouter un produit</h3><input type="hidden" id="product-id">
+        <div class="form-intro"><span class="eyebrow green">NOUVEL ARTICLE</span><h3 id="form-title">Ajouter un produit</h3><p class="muted">Renseignez les informations, choisissez vos photos, puis enregistrez.</p></div>
+        <input type="hidden" id="product-id">
         <label>Nom du produit<input id="p-name" required maxlength="90" placeholder="Ex. Écouteurs Bluetooth"></label>
         <label>Catégorie<input id="p-category" required maxlength="40" placeholder="Ex. Électronique"></label>
         <label>Description<textarea id="p-description" rows="3" maxlength="500" placeholder="Quelques détails sur le produit"></textarea></label>
-        <div class="variant-heading"><div><b>Versions / variantes</b><small>Chaque version peut avoir son propre prix, stock et jusqu'à 3 photos.</small></div><button id="add-variant" class="btn btn-outline" type="button">+ Ajouter une version</button></div>
-        <div id="variant-editor" class="variant-editor"></div>
-        <p class="hint">Les photos sont hébergées sur ImageKit. Aucune activation de Firebase Storage n'est nécessaire.</p>
-        <div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer le produit</button><button id="cancel-edit" class="btn btn-outline" type="button" hidden>Annuler</button></div>
+        <section class="photo-picker">
+          <div class="section-title"><div><b>Photos du produit</b><small>Jusqu'à 3 photos · 8 Mo maximum chacune</small></div><span class="photo-limit">3 MAX</span></div>
+          <label class="photo-dropzone" for="product-photos"><span class="photo-add-icon">＋</span><b>Choisir des photos</b><small>Appuyez ici pour sélectionner des images depuis votre téléphone</small><input id="product-photos" type="file" accept="image/*" multiple></label>
+          <div id="product-photo-previews" class="product-photo-previews"></div>
+          <div class="photo-tools"><small id="photo-count">0/3 photos sélectionnées</small><button id="clear-photos" type="button" class="text-btn">Tout annuler</button></div>
+          <p id="photo-upload-status" class="muted photo-upload-status">Les photos ne seront envoyées qu'au moment où vous enregistrerez le produit.</p>
+        </section>
+        <section id="simple-fields" class="simple-fields">
+          <div class="section-title"><div><b>Prix et disponibilité</b><small>Pour un produit sans variantes</small></div></div>
+          <div class="form-grid"><label>Prix (FCFA)<input id="simple-price" type="number" min="0" step="1" required value=""></label><label>Ancien prix (facultatif)<input id="simple-old-price" type="number" min="0" step="1"></label></div>
+          <div class="form-grid"><label>Stock<input id="simple-stock" type="number" min="0" step="1" required value="1"></label><label>Fin de promotion<input id="simple-end" type="datetime-local"></label></div>
+          <label class="check-row"><input id="simple-available" type="checkbox" checked> Disponible</label>
+        </section>
+        <section class="variants-section">
+          <button id="toggle-variants" class="variant-toggle" type="button" aria-expanded="false">＋ Ajouter des variantes</button>
+          <p class="muted variant-help">Facultatif : par exemple, différentes couleurs, tailles ou capacités. Les photos choisies ci-dessus seront communes à toutes les variantes.</p>
+          <div id="variant-editor" class="variant-editor" hidden></div>
+        </section>
+        <div class="form-actions"><button class="btn btn-primary save-product-btn" type="submit">Enregistrer le produit</button><button id="cancel-edit" class="btn btn-outline" type="button" hidden>Annuler les modifications</button></div>
         <p id="form-message" class="message" role="status"></p>
+        <p class="hint">Les photos sont hébergées sur ImageKit. Elles ne sont téléversées qu'après votre validation avec le bouton Enregistrer.</p>
       </form>
       <section class="panel inventory"><div class="inventory-head"><h3>Catalogue actuel</h3><span id="admin-count" class="count-badge">0</span></div><div id="admin-products"><p class="muted">Chargement…</p></div></section>
     </div>
