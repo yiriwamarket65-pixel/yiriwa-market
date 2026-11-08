@@ -108,7 +108,7 @@ function editProduct(id){
  const first=vs[0],imgs=Array.isArray(first.images)&&first.images.length?first.images:(first.imageUrl?[first.imageUrl]:[]);
  sharedImages=imgs.slice(0,3);revokePending();paintProductPhotos();
  const hasVariants=vs.length>1||(vs.length===1&&vs[0].name&&vs[0].name!=="Standard");
- $("#variant-editor").innerHTML="";$("#variant-editor").hidden=!hasVariants;$("#simple-fields").hidden=hasVariants;
+ revokeVariantPending();$("#variant-editor").innerHTML="";$("#variant-editor").hidden=!hasVariants;$("#simple-fields").hidden=hasVariants;
  $("#toggle-variants").setAttribute("aria-expanded",String(hasVariants));$("#toggle-variants").textContent=hasVariants?"− Retirer les variantes":"+ Ajouter des variantes";
  $("#simple-price").value=first.price??0;$("#simple-old-price").value=first.oldPrice??"";$("#simple-stock").value=first.stock??0;$("#simple-end").value=first.promoEndsAt||"";$("#simple-available").checked=first.available!==false;
  if(hasVariants){const baseImages=imgs;vs.forEach(v=>{const vi=Array.isArray(v.images)?v.images:(v.imageUrl?[v.imageUrl]:[]);const custom=vi.length>0&&(vi.length!==baseImages.length||vi.some((url,i)=>url!==baseImages[i]));addVariant(v,custom);});}
