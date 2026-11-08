@@ -39,6 +39,7 @@ async function uploadImage(file){
 }
 let sharedImages=[], pendingFiles=[];
 function revokePending(){pendingFiles.forEach(x=>URL.revokeObjectURL(x.preview));pendingFiles=[];}
+function revokeVariantPending(){document.querySelectorAll(".variant-row").forEach(row=>(row._variantFiles||[]).forEach(x=>URL.revokeObjectURL(x.preview)));}
 function paintProductPhotos(){
  const box=$("#product-photo-previews");
  box.innerHTML=[...sharedImages.map((url,i)=>({url,kind:"saved",index:i})),...pendingFiles.map((x,i)=>({url:x.preview,kind:"pending",index:i}))].map(x=>`<div class="product-photo-card"><img src="${esc(x.url)}" alt="Aperçu de la photo"><button type="button" data-photo-kind="${x.kind}" data-photo-index="${x.index}" aria-label="Supprimer cette photo">×</button><small>${x.kind==="pending"?"Pas encore téléversée":"Déjà enregistrée"}</small></div>`).join("");
@@ -114,7 +115,7 @@ function editProduct(id){
  $("#form-title").textContent="Modifier le produit";$("#cancel-edit").hidden=false;$("#form-message").textContent="";window.scrollTo({top:0,behavior:"smooth"});
 }
 function resetForm(){
- $("#product-form").reset();$("#product-id").value="";$("#variant-editor").innerHTML="";$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;
+ revokeVariantPending();$("#product-form").reset();$("#product-id").value="";$("#variant-editor").innerHTML="";$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;
  sharedImages=[];revokePending();paintProductPhotos();$("#toggle-variants").textContent="+ Ajouter des variantes";$("#toggle-variants").setAttribute("aria-expanded","false");
  $("#form-title").textContent="Ajouter un produit";$("#cancel-edit").hidden=true;
 }
