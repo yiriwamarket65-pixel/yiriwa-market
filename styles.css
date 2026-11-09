@@ -111,3 +111,7 @@ input:focus,textarea:focus{border-color:#8dc66b;box-shadow:0 0 0 3px #8dc66b20}
 .variant-photo-count{display:block;margin-top:8px;color:#61756a;font-size:11px}
 .use-shared-photos{display:block;margin-top:8px}
 @media(max-width:600px){.variant-photo-previews{gap:6px}.variant-photo-thumb img{height:82px}}
+
+/* Garder le panier visible au-dessus du badge Netlify */
+.cart-dock{position:fixed!important;left:16px!important;right:16px!important;bottom:92px!important;z-index:10000!important;}
+@media(max-width:650px){.cart-dock{bottom:92px!important;left:12px!important;right:12px!important;}}
