@@ -82,14 +82,22 @@ function variantRow(v={name:"",price:"",oldPrice:"",stock:1,promoEndsAt:"",avail
   e.target.value="";paintVariantPhotos(el);
  });
  el.querySelector(".use-shared-photos").addEventListener("click",()=>{el._variantImages=[];el._variantFiles.forEach(x=>URL.revokeObjectURL(x.preview));el._variantFiles=[];paintVariantPhotos(el);});
- el.querySelector(".remove-variant").addEventListener("click",()=>{el._variantFiles.forEach(x=>URL.revokeObjectURL(x.preview));el.remove();if(!document.querySelectorAll(".variant-row").length){$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;$("#toggle-variants").setAttribute("aria-expanded","false");$("#toggle-variants").textContent="+ Ajouter des variantes";}});
+ el.querySelector(".remove-variant").addEventListener("click",()=>{el._variantFiles.forEach(x=>URL.revokeObjectURL(x.preview));el.remove();if(!document.querySelectorAll(".variant-row").length){$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;$("#toggle-variants").setAttribute("aria-expanded","false");$("#toggle-variants").textContent="+ Ajouter des variantes";$("#add-variant").hidden=true;}});
  paintVariantPhotos(el);return el;
 }
 function addVariant(v,customPhotos=false){$("#variant-editor").append(variantRow(v,customPhotos));}
+$("#add-variant").addEventListener("click",()=>addVariant({name:"",price:"",oldPrice:"",stock:1,available:true}));
+function customButtonRow(b={label:"",url:""}){
+ const row=document.createElement("div");row.className="custom-button-row";
+ row.innerHTML='<label>Texte du bouton<input class="custom-button-label" maxlength="35" required value="'+esc(b.label)+'" placeholder="Ex. Voir le catalogue"></label><label>Lien du bouton<input class="custom-button-url" type="url" required value="'+esc(b.url)+'" placeholder="https://..."></label><button type="button" class="text-btn remove-custom-button">Supprimer ce bouton</button>';
+ row.querySelector(".remove-custom-button").addEventListener("click",()=>row.remove());return row;
+}
+function addCustomButton(b){$("#custom-button-editor").append(customButtonRow(b));}
+$("#add-custom-button").addEventListener("click",()=>addCustomButton({label:"",url:""}));
 $("#toggle-variants").addEventListener("click",()=>{
  const box=$("#variant-editor");
- if(box.children.length){box.querySelectorAll(".variant-row").forEach(row=>(row._variantFiles||[]).forEach(x=>URL.revokeObjectURL(x.preview)));box.innerHTML="";box.hidden=true;$("#simple-fields").hidden=false;$("#toggle-variants").setAttribute("aria-expanded","false");$("#toggle-variants").textContent="+ Ajouter des variantes";return;}
- box.hidden=false;$("#simple-fields").hidden=true;$("#toggle-variants").setAttribute("aria-expanded","true");$("#toggle-variants").textContent="− Retirer les variantes";addVariant({name:"",price:"",oldPrice:"",stock:1,available:true});
+ if(box.children.length){box.querySelectorAll(".variant-row").forEach(row=>(row._variantFiles||[]).forEach(x=>URL.revokeObjectURL(x.preview)));box.innerHTML="";box.hidden=true;$("#simple-fields").hidden=false;$("#toggle-variants").setAttribute("aria-expanded","false");$("#toggle-variants").textContent="+ Ajouter des variantes";$("#add-variant").hidden=true;return;}
+ box.hidden=false;$("#simple-fields").hidden=true;$("#toggle-variants").setAttribute("aria-expanded","true");$("#toggle-variants").textContent="− Retirer toutes les variantes";$("#add-variant").hidden=false;addVariant({name:"",price:"",oldPrice:"",stock:1,available:true});
 });
 $("#login-form").addEventListener("submit",async e=>{e.preventDefault();loginError.textContent="";try{await signInWithEmailAndPassword(auth,$("#email").value.trim(),$("#password").value);}catch(err){loginError.textContent="Connexion impossible. Vérifiez l'adresse e-mail et le mot de passe.";console.error(err);}});
 $("#logout").addEventListener("click",()=>signOut(auth));
@@ -109,13 +117,14 @@ function editProduct(id){
  sharedImages=imgs.slice(0,3);revokePending();paintProductPhotos();
  const hasVariants=vs.length>1||(vs.length===1&&vs[0].name&&vs[0].name!=="Standard");
  revokeVariantPending();$("#variant-editor").innerHTML="";$("#variant-editor").hidden=!hasVariants;$("#simple-fields").hidden=hasVariants;
- $("#toggle-variants").setAttribute("aria-expanded",String(hasVariants));$("#toggle-variants").textContent=hasVariants?"− Retirer les variantes":"+ Ajouter des variantes";
+ $("#toggle-variants").setAttribute("aria-expanded",String(hasVariants));$("#toggle-variants").textContent=hasVariants?"− Retirer toutes les variantes":"+ Ajouter des variantes";$("#add-variant").hidden=!hasVariants;
  $("#simple-price").value=first.price??0;$("#simple-old-price").value=first.oldPrice??"";$("#simple-stock").value=first.stock??0;$("#simple-end").value=first.promoEndsAt||"";$("#simple-available").checked=first.available!==false;
  if(hasVariants){const baseImages=imgs;vs.forEach(v=>{const vi=Array.isArray(v.images)?v.images:(v.imageUrl?[v.imageUrl]:[]);const custom=vi.length>0&&(vi.length!==baseImages.length||vi.some((url,i)=>url!==baseImages[i]));addVariant(v,custom);});}
+ $("#custom-button-editor").innerHTML="";(Array.isArray(p.customButtons)?p.customButtons:[]).forEach(addCustomButton);
  $("#form-title").textContent="Modifier le produit";$("#cancel-edit").hidden=false;$("#form-message").textContent="";window.scrollTo({top:0,behavior:"smooth"});
 }
 function resetForm(){
- revokeVariantPending();$("#product-form").reset();$("#product-id").value="";$("#variant-editor").innerHTML="";$("#variant-editor").hidden=true;$("#simple-fields").hidden=false;
+ revokeVariantPending();$("#product-form").reset();$("#product-id").value="";$("#variant-editor").innerHTML="";$("#variant-editor").hidden=true;$("#add-variant").hidden=true;$("#simple-fields").hidden=false;$("#custom-button-editor").innerHTML="";
  sharedImages=[];revokePending();paintProductPhotos();$("#toggle-variants").textContent="+ Ajouter des variantes";$("#toggle-variants").setAttribute("aria-expanded","false");
  $("#form-title").textContent="Ajouter un produit";$("#cancel-edit").hidden=true;
 }
@@ -139,8 +148,8 @@ async function collectVariants(images){
 }
 $("#product-form").addEventListener("submit",async e=>{
  e.preventDefault();const id=$("#product-id").value,msg=$("#form-message");msg.classList.remove("error");msg.textContent="Préparation du produit…";
- try{const images=await saveSharedPhotos(),variants=await collectVariants(images);if(!variants.length)throw new Error("Ajoutez au moins une variante.");if(variants.some(v=>!v.name||!Number.isFinite(v.price)||v.price<0||!Number.isFinite(v.stock)||v.stock<0))throw new Error("Vérifiez le nom, le prix et le stock.");
- const data={name:$("#p-name").value.trim(),category:$("#p-category").value.trim(),description:$("#p-description").value.trim(),variants,updatedAt:serverTimestamp()};
+ try{const images=await saveSharedPhotos(),variants=await collectVariants(images);const customButtons=[...document.querySelectorAll(".custom-button-row")].map(row=>({label:row.querySelector(".custom-button-label").value.trim(),url:row.querySelector(".custom-button-url").value.trim()}));if(customButtons.some(b=>!b.label||!/^https?:\/\//i.test(b.url)))throw new Error("Chaque bouton supplémentaire doit avoir un texte et un lien HTTP ou HTTPS.");if(!variants.length)throw new Error("Ajoutez au moins une variante.");if(variants.some(v=>!v.name||!Number.isFinite(v.price)||v.price<0||!Number.isFinite(v.stock)||v.stock<0))throw new Error("Vérifiez le nom, le prix et le stock.");
+ const data={name:$("#p-name").value.trim(),category:$("#p-category").value.trim(),description:$("#p-description").value.trim(),variants,customButtons,updatedAt:serverTimestamp()};
  if(id)await updateDoc(doc(db,"products",id),data);else await addDoc(collection(db,"products"),{...data,createdAt:serverTimestamp()});
  msg.textContent="Produit enregistré avec succès.";resetForm();await loadProducts();
  }catch(err){console.error(err);msg.textContent=err.message||"Échec de l'enregistrement. Vérifiez votre connexion et les règles Firestore.";msg.classList.add("error");}
