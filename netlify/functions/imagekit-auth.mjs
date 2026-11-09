@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-const ADMIN_UID = "9Y4RpeKwD8e8nGoZgiUuiz09mQt1";
+const ADMIN_UID = "PGc2FSLa5UTAMSsnv2hf30Dm0uC2";
 const FIREBASE_API_KEY = "AIzaSyDDZnkXgnY41L8BZ_eId5XC_ldAd4xQ_iU";
 const IMAGEKIT_PUBLIC_KEY = "public_eKHo9it526HQAaPaRbQZjIbfYeo=";
 
