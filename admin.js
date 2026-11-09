@@ -2,7 +2,7 @@ import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-const ADMIN_UID="9Y4RpeKwD8e8nGoZgiUuiz09mQt1";
+const ADMIN_UID="PGc2FSLa5UTAMSsnv2hf30Dm0uC2";
 const IMAGEKIT_PUBLIC_KEY="public_eKHo9it526HQAaPaRbQZjIbfYeo=";
 const $=s=>document.querySelector(s), loginPanel=$("#login-panel"), dashboard=$("#dashboard"), loginError=$("#login-error");
 let currentProducts=[], currentOrders=[];
