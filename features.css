@@ -588,3 +588,16 @@ body.cart-open{overflow:hidden}
   .cart-dock>button{min-height:33px;padding:0 8px;font-size:9px}
   .cart-panel{right:10px;bottom:calc(60px + env(safe-area-inset-bottom));width:min(330px,calc(100% - 20px));max-height:55dvh;padding:11px}
 }
+
+
+/* Contrôles des variantes multiples et boutons ajoutés par l’administrateur */
+.add-variant-btn{width:100%;margin-top:10px;min-height:42px}
+.custom-buttons-section{margin-top:20px;padding-top:16px;border-top:1px solid #e1e9e2}
+.custom-button-editor{display:grid;gap:10px;margin:12px 0}
+.custom-button-row{display:grid;grid-template-columns:1fr 1.4fr auto;align-items:end;gap:10px;padding:12px;border:1px solid #dce7de;border-radius:12px;background:#f8fbf8}
+.custom-button-row label{display:grid;gap:6px;font-size:12px;color:#365442}
+.custom-button-row input{width:100%;min-width:0;padding:11px;border:1px solid #dce7de;border-radius:9px;background:#fff;color:#20372a}
+.custom-button-row .remove-custom-button{padding:10px;color:#b93838}
+.admin-custom-buttons{display:grid;gap:7px;margin-top:7px}
+.custom-product-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:36px;padding:8px 10px;border-radius:9px;font-size:11px;text-decoration:none;text-align:center}
+@media(max-width:650px){.custom-button-row{grid-template-columns:1fr;gap:8px}.custom-button-row .remove-custom-button{justify-self:start}}
