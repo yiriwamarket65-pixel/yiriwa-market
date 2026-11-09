@@ -1,0 +1,90 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == 'PGc2FSLa5UTAMSsnv2hf30Dm0uC2';
+    }
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Catalogue public ; gestion réservée à l'administrateur.
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Profils privés : chaque client ne gère que son propre document.
+    match /users/{userId} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow create, update: if isAdmin()
+        || (signedIn()
+          && request.auth.uid == userId
+          && !request.resource.data.keys().hasAny(['role', 'isAdmin']));
+      allow delete: if isAdmin() || (signedIn() && request.auth.uid == userId);
+    }
+
+    match /carts/{userId} {
+      allow read, write: if isAdmin() || (signedIn() && request.auth.uid == userId);
+    }
+
+    match /favorites/{userId} {
+      allow read, write: if isAdmin() || (signedIn() && request.auth.uid == userId);
+    }
+
+    // Le site ouvre WhatsApp sans compte client ; seules des demandes simples sont créées publiquement.
+    match /orders/{orderId} {
+      allow create: if request.resource.data.keys().hasOnly([
+          'productId', 'productName', 'variantName', 'unitPrice',
+          'quantity', 'status', 'createdAt'
+        ])
+        && request.resource.data.productId is string
+        && request.resource.data.productName is string
+        && request.resource.data.variantName is string
+        && request.resource.data.unitPrice is number
+        && request.resource.data.unitPrice >= 0
+        && request.resource.data.quantity is int
+        && request.resource.data.quantity == 1
+        && request.resource.data.status == 'whatsapp_opened';
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Les visiteurs peuvent envoyer un avis, mais pas le publier eux-mêmes.
+    match /reviews/{reviewId} {
+      allow create: if request.resource.data.keys().hasOnly([
+          'type', 'productId', 'productName', 'name',
+          'comment', 'rating', 'status', 'createdAt'
+        ])
+        && request.resource.data.type in ['store', 'product']
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() > 0
+        && request.resource.data.comment.size() <= 1500
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.status == 'pending';
+      allow read: if isAdmin() || resource.data.status == 'approved';
+      allow update, delete: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if settingId == 'public' || settingId == 'storefront';
+      allow write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
