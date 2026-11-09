@@ -4,13 +4,12 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-aut
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDDZnkXgnY41L8BZ_eId5XC_ldAd4xQ_iU",
-  authDomain: "yiriwa-market.firebaseapp.com",
-  projectId: "yiriwa-market",
-  storageBucket: "yiriwa-market.firebasestorage.app",
-  messagingSenderId: "650816949308",
-  appId: "1:650816949308:web:332828139c688cb26f4739",
-  measurementId: "G-60R33GBL7K"
+  apiKey: "AIzaSyANuLvXFw9BTjSN-ieBu5fLlqkez8XqpLg",
+  authDomain: "yiriwa-market-v2.firebaseapp.com",
+  projectId: "yiriwa-market-v2",
+  storageBucket: "yiriwa-market-v2.firebasestorage.app",
+  messagingSenderId: "392592256605",
+  appId: "1:392592256605:web:c8e1d5a053482481bfa7b4"
 };
 
 const app = initializeApp(firebaseConfig);
