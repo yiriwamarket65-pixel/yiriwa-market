@@ -120,7 +120,7 @@ input:focus,textarea:focus{border-color:#8dc66b;box-shadow:0 0 0 3px #8dc66b20}
 @media(max-width:650px){.cart-dock{left:12px;right:auto;bottom:92px;top:auto;width:calc(100vw - 24px);}}
 
 /* Fiche détaillée produit : galerie et choix de quantité */
-.details-product-btn{width:100%;margin:0 0 10px;min-height:42px}
+.details-product-btn{width:auto;max-width:100%;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;padding:7px 13px;margin:0 0 8px;min-height:32px;font-size:12px;line-height:1.2}
 .product-details-modal{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72);overflow:auto}
 .product-details-modal[hidden]{display:none}
 .product-details-dialog{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:24px;width:min(900px,100%);max-height:min(90vh,760px);overflow:auto;padding:24px;border:1px solid var(--line);border-radius:20px;background:#183529;color:#e8f1eb;box-shadow:0 24px 80px #0008}
